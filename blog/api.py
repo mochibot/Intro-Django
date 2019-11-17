@@ -14,4 +14,11 @@ class PersonalBlogSerializer(serializers.HyperlinkedModelSerializer):
 
 class PersonalBlogViewSet(viewsets.ModelViewSet):
     serializer_class = PersonalBlogSerializer
-    queryset = PersonalBlog.objects.all()
+    queryset = PersonalBlog.objects.none()
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_anonymous:
+            return PersonalBlog.objects.none()
+        else:
+            return PersonalBlog.objects.filter(author=user)
